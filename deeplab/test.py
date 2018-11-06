@@ -1,7 +1,11 @@
+
+import sys
+sys.path.append('./')
 import os
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from time import time
 from skimage.data import imread
 from skimage.morphology import label
 
@@ -40,22 +44,29 @@ def model_test():
                 return_elements=['ImageTensor:0', 'SemanticPredictions:0'])
     init_op = tf.global_variables_initializer()
     test_img_dir = '/media/jun/data/ship/test_v2/'
+
     with tf.Session() as sess:
         sess.run(init_op)
         pred_rows = []
+        start_time = time()
         for image_name in os.listdir(test_img_dir):
+          single_start_time = time()
           test_img = imread(test_img_dir + image_name)
           test_img = np.expand_dims(test_img, 0)
           pred_mask = sess.run(seg_pred, {img_tensor: test_img})
-          print(np.max(pred_mask))
+          
           rles = multi_rle_encode(pred_mask)
           if len(rles)>0:
               for rle in rles:
                   pred_rows += [{'ImageId': image_name, 'EncodedPixels': rle}]
           else:
               pred_rows += [{'ImageId': image_name, 'EncodedPixels': None}]
+          print(image_name+': ', len(rles))
+          print('Time cost: %s' % (time()-single_start_time))
+        print('All time cost: %s' % (time()-start_time))          
         submission_df = pd.DataFrame(pred_rows)[['ImageId', 'EncodedPixels']]
         submission_df.to_csv('submission.csv', index=False)
+        print('File submission.csv success saved.')
 
 if __name__ == '__main__':
   model_test()

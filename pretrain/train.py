@@ -91,7 +91,7 @@ flags.DEFINE_integer('train_batch_size', 16,
 flags.DEFINE_float('weight_decay', 0.00004,
                    'The value of the weight decay for training.')
 
-flags.DEFINE_multi_integer('resized_image_size', [513, 513],
+flags.DEFINE_multi_integer('resized_image_size', [256, 256],
                            'Image crop size [height, width] during training.')
 
 flags.DEFINE_float('last_layer_gradient_multiplier', 1.0,
@@ -100,11 +100,11 @@ flags.DEFINE_float('last_layer_gradient_multiplier', 1.0,
 
 # Settings for fine-tuning the network.
 
-flags.DEFINE_string('tf_initial_checkpoint', './model_zoo/xception_65_coco_pretrained/model.ckpt',
+flags.DEFINE_string('tf_initial_checkpoint', './model_zoo/xception_41/model.ckpt',
                     'The initial checkpoint in tensorflow format.')
 
 # Set to False if one does not want to re-use the trained classifier weights.
-flags.DEFINE_boolean('initialize_last_layer', True,
+flags.DEFINE_boolean('initialize_last_layer', False,
                      'Initialize the last layer.')
 
 flags.DEFINE_integer('slow_start_step', 0,
@@ -298,7 +298,7 @@ def main(unused_argv):
             FLAGS.train_logdir,
             FLAGS.tf_initial_checkpoint,
             FLAGS.initialize_last_layer,
-            last_layers,
+            ['Logits'],
             ignore_missing_vars=True),
         summary_op=summary_op,
         save_summaries_secs=FLAGS.save_summaries_secs,

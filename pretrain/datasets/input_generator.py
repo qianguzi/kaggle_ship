@@ -2,8 +2,7 @@ import collections
 import os.path
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-from deeplab import common
-from deeplab import input_preprocess
+from pretrain import common
 
 dataset = slim.dataset
 tfexample_decoder = slim.tfexample_decoder
@@ -28,8 +27,8 @@ DatasetDescriptor = collections.namedtuple(
 # You are required to figure it out for your training/testing example.
 _SHIP_INFORMATION = DatasetDescriptor(
     splits_to_sizes={
-        'train': 7952,  # num of samples in images/training
-        'val': 80,  # num of samples in images/validation
+        'train': 13738,  # num of samples in images/training
+        'val': 724,  # num of samples in images/validation
     },
     num_classes=2,
 )

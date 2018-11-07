@@ -26,7 +26,7 @@ flags = tf.app.flags
 
 # Model dependent flags.
 
-flags.DEFINE_string('model_variant', 'xception_65', 'DeepLab model variant.')
+flags.DEFINE_string('model_variant', 'xception_41', 'DeepLab model variant.')
 
 # Defaults to None. Set multi_grid = [1, 2, 4] when using provided
 # 'resnet_v1_{50,101}_beta' checkpoints.
@@ -82,4 +82,4 @@ class ModelOptions(
         cls, output_stride, FLAGS.multi_grid, FLAGS.model_variant, FLAGS.depth_multiplier)
 
   def __deepcopy__(self, memo):
-    return ModelOptions(copy.deepcopy(self.output_stride)
+    return ModelOptions(copy.deepcopy(self.output_stride))

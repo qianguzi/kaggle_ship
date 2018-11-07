@@ -100,8 +100,8 @@ _PASCAL_VOC_SEG_INFORMATION = DatasetDescriptor(
 # You are required to figure it out for your training/testing example.
 _SHIP_INFORMATION = DatasetDescriptor(
     splits_to_sizes={
-        'train': 26216,  # num of samples in images/training
-        'val': 2626,  # num of samples in images/validation
+        'train': 17082,  # num of samples in images/training
+        'val': 174,  # num of samples in images/validation
     },
     num_classes=2,
     ignore_label=2,

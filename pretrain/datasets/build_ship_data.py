@@ -27,11 +27,11 @@ from sklearn.model_selection import train_test_split
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('dataset_folder',
-                           '/media/jun/data/ship',
+                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string('train_folder',
-                           '/media/jun/data/ship/train_v2',
+                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/train_v2',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string(
@@ -111,12 +111,12 @@ def main(unused_argv):
     area = area / (768*768)
     if area == 0:
         return 0
-    elif area >= 0.015:
+    elif area >= 0.01:
         return 1
     else:
         return 2
   train_gp['class'] = train_gp['area'].apply(calc_class)
-  train, val = train_test_split(train_gp, test_size=0.01, stratify=train_gp['class'].tolist())
+  train, val = train_test_split(train_gp, test_size=0.05, stratify=train_gp['class'].tolist())
   train_isship_list = train['ImageId'][train['class']==1].tolist()
   train_nanship_list = train['ImageId'][train['class']==0].tolist()
   train_nanship_list = random.sample(train_nanship_list, len(train_isship_list))

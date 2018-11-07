@@ -94,23 +94,15 @@ def write_tfexample(image_name, image_reader, label_reader, train_df, tfrecord_w
       image_data, image_name[:-4], height, width, seg_data)
   tfrecord_writer.write(example.SerializeToString())
 
-def _convert_train_dataset(train_isship_list, train_nanship_list, train_df):
-  """Converts the train dataset to TFRecord format.
-
-  Args:
-    dataset_split: The dataset split (e.g., train, test).
-
-  Raises:
-    RuntimeError: If loaded image and label have different shape.
-  """
-  dataset = 'train'
+def _convert_dataset(dataset, is_ship_list, nan_ship_list, train_df):
+  
   sys.stdout.write('Processing ' + dataset)
 
-  min_num = min(len(train_isship_list),len(train_nanship_list))
+  min_num = min(len(is_ship_list),len(nan_ship_list))
   #min_num = 100
   print('Number of train samples: ', 2*min_num)
-  train_isship_list = random.sample(train_isship_list, min_num)
-  train_nanship_list = random.sample(train_nanship_list, min_num)
+  is_ship_list = random.sample(is_ship_list, min_num)
+  nan_ship_list = random.sample(nan_ship_list, min_num)
   num_per_shard = int(math.ceil(min_num / float(_NUM_SHARDS)))
 
   image_reader = build_data.ImageReader('jpg', channels=3)
@@ -126,45 +118,24 @@ def _convert_train_dataset(train_isship_list, train_nanship_list, train_df):
         sys.stdout.write('\r>> Converting pair of images %d/%d shard %d' % (
             i + 1, min_num, shard_id))
         sys.stdout.flush()
-        write_tfexample(train_isship_list[i], image_reader, label_reader, train_df, tfrecord_writer)
-        write_tfexample(train_nanship_list[i], image_reader, label_reader, train_df, tfrecord_writer)
+        write_tfexample(is_ship_list[i], image_reader, label_reader, train_df, tfrecord_writer)
+        write_tfexample(nan_ship_list[i], image_reader, label_reader, train_df, tfrecord_writer)
         
     sys.stdout.write('\n')
     sys.stdout.flush()
 
-def _convert_val_dataset(val_list, train_df):
-  """Converts the train dataset to TFRecord format.
 
-  Args:
-    dataset_split: The dataset split (e.g., train, test).
+def split_term(train):
+  train_lotship_list = train['ImageId'][train['class']>2].tolist()
+  train_fewship_list = train['ImageId'][train['class']==1].tolist()
+  train_fewship_list = random.sample(train_fewship_list, len(train_lotship_list))
+  train_anyship_list = train['ImageId'][train['class']==2].tolist()
+  split_num = int(len(train_anyship_list)/2)
 
-  Raises:
-    RuntimeError: If loaded image and label have different shape.
-  """
-  dataset = 'val'
-  sys.stdout.write('Processing ' + dataset)
+  train_lotship_list = train_lotship_list + train_anyship_list[:split_num]
+  train_fewship_list = train_anyship_list[split_num:] + train_fewship_list
+  return train_lotship_list, train_fewship_list
 
-  num_val = len(val_list)
-  print('Number of val samples: ', num_val)
-  num_per_shard = int(math.ceil(num_val / float(_NUM_SHARDS)))
-
-  image_reader = build_data.ImageReader('jpg', channels=3)
-  label_reader = build_data.ImageReader('png', channels=1)
-  for shard_id in range(_NUM_SHARDS):
-    output_filename = os.path.join(
-        FLAGS.output_dir,
-        '%s-%05d-of-%05d.tfrecord' % (dataset, shard_id, _NUM_SHARDS))
-    with tf.python_io.TFRecordWriter(output_filename) as tfrecord_writer:
-      start_idx = shard_id * num_per_shard
-      end_idx = min((shard_id + 1) * num_per_shard, num_val)
-      for i in range(start_idx, end_idx):
-        sys.stdout.write('\r>> Converting image %d/%d shard %d' % (
-            i + 1, num_val, shard_id))
-        sys.stdout.flush()
-        write_tfexample(val_list[i], image_reader, label_reader, train_df, tfrecord_writer)
-        
-    sys.stdout.write('\n')
-    sys.stdout.flush()
 
 def main(unused_argv):
   train_df = pd.read_csv(os.path.join(FLAGS.dataset_folder, 'train_ship_segmentations_v2.csv'))
@@ -202,32 +173,11 @@ def main(unused_argv):
         return 6
   train_gp['class'] = train_gp['area'].apply(calc_class)
   train, val = train_test_split(train_gp, test_size=0.01, stratify=train_gp['class'].tolist())
-  if not FLAGS.new_split:
-    train_lotship_list = train['ImageId'][train['class']>1].tolist()
-    train_nanship_list = train['ImageId'][train['class']==0].tolist()
-    train_nanship_list = random.sample(train_nanship_list, len(train_lotship_list))
-    train_fewship_list = train['ImageId'][train['class']==1].tolist()
-    split_num = int(len(train_fewship_list)/2)
 
-    train_isship_list = train_lotship_list + train_fewship_list[:split_num]
-    train_nanship_list = train_fewship_list[split_num:] + train_nanship_list
-
-    val_list = val['ImageId'].tolist()
-    _convert_train_dataset(train_isship_list, train_nanship_list, train_df)
-    _convert_val_dataset(val_list, train_df)
-  else:
-    train_lotship_list = train['ImageId'][train['class']>1].tolist()
-    train_fewship_list = train['ImageId'][train['class']<=1].tolist()
-    min_num = min(len(train_lotship_list), len(train_fewship_list))
-    random.shuffle(train_lotship_list)
-    random.shuffle(train_fewship_list)
-    train_isship_list = train_lotship_list[:min_num]
-    train_nanship_list = train_fewship_list[:min_num]
-
-    other_list = random.sample(train_lotship_list[min_num:] + train_fewship_list[min_num:], 2000)
-    val_list = val['ImageId'].tolist() + other_list
-    _convert_val_dataset(val_list, train_df)
-    _convert_train_dataset(train_isship_list, train_nanship_list, train_df)
+  train_lotship_list, train_fewship_list = split_term(train)
+  val_lotship_list, val_fewship_list = split_term(val)
+  _convert_dataset('val', val_lotship_list, val_fewship_list, train_df)
+  _convert_dataset('train', train_lotship_list, train_fewship_list, train_df)
 
 
 if __name__ == '__main__':

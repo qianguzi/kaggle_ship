@@ -79,7 +79,7 @@ flags.DEFINE_enum('learning_policy', 'poly', ['poly', 'step'],
 
 # Use 0.007 when training on PASCAL augmented training set, train_aug. When
 # fine-tuning on PASCAL trainval set, use learning rate=0.0001.
-flags.DEFINE_float('base_learning_rate', .0001,
+flags.DEFINE_float('base_learning_rate', 0.007,
                    'The base learning rate for model training.')
 
 flags.DEFINE_float('learning_rate_decay_factor', 0.1,
@@ -99,12 +99,12 @@ flags.DEFINE_float('momentum', 0.9, 'The momentum value to use')
 # When fine_tune_batch_norm=True, use at least batch size larger than 12
 # (batch size more than 16 is better). Otherwise, one could use smaller batch
 # size and set fine_tune_batch_norm=False.
-flags.DEFINE_integer('train_batch_size', 6,
+flags.DEFINE_integer('train_batch_size', 4,
                      'The number of images in each batch during training.')
 
 # For weight_decay, use 0.00004 for MobileNet-V2 or Xcpetion model variants.
 # Use 0.0001 for ResNet model variants.
-flags.DEFINE_float('weight_decay', 0.0001,
+flags.DEFINE_float('weight_decay', 0.00004,
                    'The value of the weight decay for training.')
 
 flags.DEFINE_multi_integer('train_crop_size', [513, 513],
@@ -119,7 +119,7 @@ flags.DEFINE_boolean('upsample_logits', True,
 
 # Settings for fine-tuning the network.
 
-flags.DEFINE_string('tf_initial_checkpoint', './model_zoo/xception_65_coco_pretrained/model.ckpt',
+flags.DEFINE_string('tf_initial_checkpoint', './train_log/pretrain/model.ckpt-6348',
                     'The initial checkpoint in tensorflow format.')
 
 # Set to False if one does not want to re-use the trained classifier weights.
@@ -137,10 +137,10 @@ flags.DEFINE_float('slow_start_learning_rate', 1e-4,
 
 # Set to True if one wants to fine-tune the batch norm parameters in DeepLabv3.
 # Set to False and use small batch size to save GPU memory.
-flags.DEFINE_boolean('fine_tune_batch_norm', False,
+flags.DEFINE_boolean('fine_tune_batch_norm', True,
                      'Fine tune the batch norm parameters or not.')
 
-flags.DEFINE_float('min_scale_factor', 0.5,
+flags.DEFINE_float('min_scale_factor', 0.75,
                    'Mininum scale factor for data augmentation.')
 
 flags.DEFINE_float('max_scale_factor', 2.,

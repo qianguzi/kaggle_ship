@@ -27,20 +27,20 @@ from sklearn.model_selection import train_test_split
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('dataset_folder',
-                           '/media/jun/data/ship',
+                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string('train_folder',
-                           '/media/jun/data/ship/train_v2',
+                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/train_v2',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string('seg_folder',
-                           '/media/jun/data/ship/seg_v2',
+                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/seg_v2',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string(
     'output_dir',
-    './tfrecord',
+    './tfrecord/deeplab',
     'Path to save converted SSTable of TensorFlow examples.')
 
 tf.app.flags.DEFINE_bool('new_split', True,

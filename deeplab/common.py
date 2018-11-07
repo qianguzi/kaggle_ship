@@ -44,7 +44,7 @@ flags.DEFINE_integer('logits_kernel_size', 1,
 # When using 'xception_65' or 'resnet_v1' model variants, we set
 # atrous_rates = [6, 12, 18] (output stride 16) and decoder_output_stride = 4.
 # See core/feature_extractor.py for supported model variants.
-flags.DEFINE_string('model_variant', 'resnet_v1_50_beta', 'DeepLab model variant.')
+flags.DEFINE_string('model_variant', 'xception_65', 'DeepLab model variant.')
 
 flags.DEFINE_multi_float('image_pyramid', None,
                          'Input scales for multi-scale feature extraction.')

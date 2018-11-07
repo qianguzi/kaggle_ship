@@ -36,9 +36,9 @@ flags.DEFINE_string('master', '', 'BNS name of the tensorflow server')
 
 # Settings for log directories.
 
-flags.DEFINE_string('eval_logdir', './val_log', 'Where to write the event logs.')
+flags.DEFINE_string('eval_logdir', './val_log/deeplab', 'Where to write the event logs.')
 
-flags.DEFINE_string('checkpoint_dir', './train_log/', 'Directory of model checkpoints.')
+flags.DEFINE_string('checkpoint_dir', './train_log/deeplab', 'Directory of model checkpoints.')
 
 # Settings for evaluating the model.
 
@@ -76,9 +76,9 @@ flags.DEFINE_string('dataset', 'ship',
 flags.DEFINE_string('eval_split', 'val',
                     'Which split of the dataset used for evaluation')
 
-flags.DEFINE_string('dataset_dir', './tfrecord', 'Where the dataset reside.')
+flags.DEFINE_string('dataset_dir', './tfrecord/deeplab', 'Where the dataset reside.')
 
-flags.DEFINE_integer('max_number_of_evaluations', 1,
+flags.DEFINE_integer('max_number_of_evaluations', 5,
                      'Maximum number of eval iterations. Will loop '
                      'indefinitely upon nonpositive values.')
 

@@ -29,7 +29,7 @@ flags = tf.app.flags
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('checkpoint_path', './train_log/model.ckpt-99837', 'Checkpoint path')
+flags.DEFINE_string('checkpoint_path', './train_log/deeplab/model.ckpt-99837', 'Checkpoint path')
 
 flags.DEFINE_string('export_path', './model.pb',
                     'Path to output Tensorflow frozen graph.')
@@ -49,7 +49,7 @@ flags.DEFINE_integer('output_stride', 16,
                      'The ratio of input to output spatial resolution.')
 
 # Change to [0.5, 0.75, 1.0, 1.25, 1.5, 1.75] for multi-scale inference.
-flags.DEFINE_multi_float('inference_scales', [1.0],
+flags.DEFINE_multi_float('inference_scales', [0.75, 1.125, 1.5, 1.875, 2.25, 2.625],
                          'The scales to resize images for inference.')
 
 flags.DEFINE_bool('add_flipped_images', False,

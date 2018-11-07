@@ -43,13 +43,13 @@ def model_test():
                 od_graph_def,
                 return_elements=['ImageTensor:0', 'SemanticPredictions:0'])
     init_op = tf.global_variables_initializer()
-    test_img_dir = '/media/jun/data/ship/test_v2/'
+    test_img_dir = '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/test_v2/'
 
     with tf.Session() as sess:
         sess.run(init_op)
         pred_rows = []
         start_time = time()
-        for image_name in os.listdir(test_img_dir):
+        for i, image_name in enumerate(os.listdir(test_img_dir)):
           single_start_time = time()
           test_img = imread(test_img_dir + image_name)
           test_img = np.expand_dims(test_img, 0)
@@ -61,8 +61,7 @@ def model_test():
                   pred_rows += [{'ImageId': image_name, 'EncodedPixels': rle}]
           else:
               pred_rows += [{'ImageId': image_name, 'EncodedPixels': None}]
-          print(image_name+': ', len(rles))
-          print('Time cost: %s' % (time()-single_start_time))
+          print('{0}[{1}]: {2} ship(s), time cost: {3}'.format(image_name, i+1, len(rles), time()-single_start_time))
         print('All time cost: %s' % (time()-start_time))          
         submission_df = pd.DataFrame(pred_rows)[['ImageId', 'EncodedPixels']]
         submission_df.to_csv('submission.csv', index=False)

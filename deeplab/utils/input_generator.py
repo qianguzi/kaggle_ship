@@ -118,7 +118,7 @@ def get(dataset,
       dataset,
       num_readers=num_readers,
       num_epochs=None if is_training else 1,
-      shuffle=False)
+      shuffle=is_training)
   image, label, image_name, height, width = _get_data(data_provider,
                                                       dataset_split)
   if label is not None:

@@ -43,7 +43,7 @@ def model_test():
                 od_graph_def,
                 return_elements=['ImageTensor:0', 'SemanticPredictions:0'])
     init_op = tf.global_variables_initializer()
-    test_img_dir = '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/test_v2/'
+    test_img_dir = '/media/jun/data/ship/test_v2/'
 
     with tf.Session() as sess:
         sess.run(init_op)

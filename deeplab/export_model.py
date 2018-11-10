@@ -29,14 +29,14 @@ flags = tf.app.flags
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('checkpoint_path', './train_log/deeplab/model.ckpt-99837', 'Checkpoint path')
+flags.DEFINE_string('checkpoint_path', './train_log/deeplab/model.ckpt-121982', 'Checkpoint path')
 
 flags.DEFINE_string('export_path', './model.pb',
                     'Path to output Tensorflow frozen graph.')
 
 flags.DEFINE_integer('num_classes', 2, 'Number of classes.')
 
-flags.DEFINE_multi_integer('crop_size', [513, 513],
+flags.DEFINE_multi_integer('crop_size', [769, 769],
                            'Crop size [height, width].')
 
 # For `xception_65`, use atrous_rates = [12, 24, 36] if output_stride = 8, or
@@ -49,10 +49,10 @@ flags.DEFINE_integer('output_stride', 16,
                      'The ratio of input to output spatial resolution.')
 
 # Change to [0.5, 0.75, 1.0, 1.25, 1.5, 1.75] for multi-scale inference.
-flags.DEFINE_multi_float('inference_scales', [0.75, 1.125, 1.5, 1.875, 2.25, 2.625],
+flags.DEFINE_multi_float('inference_scales', [0.75, 1.25, 1.75],
                          'The scales to resize images for inference.')
 
-flags.DEFINE_bool('add_flipped_images', False,
+flags.DEFINE_bool('add_flipped_images', True,
                   'Add flipped images during inference or not.')
 
 # Input name of the exported model.

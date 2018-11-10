@@ -45,7 +45,7 @@ flags.DEFINE_string('checkpoint_dir', './train_log/deeplab', 'Directory of model
 flags.DEFINE_integer('eval_batch_size', 1,
                      'The number of images in each batch during evaluation.')
 
-flags.DEFINE_multi_integer('eval_crop_size', [513, 513],
+flags.DEFINE_multi_integer('eval_crop_size', [769, 769],
                            'Image crop size [height, width] for evaluation.')
 
 flags.DEFINE_integer('eval_interval_secs', 60 * 5,
@@ -61,7 +61,9 @@ flags.DEFINE_integer('output_stride', 16,
                      'The ratio of input to output spatial resolution.')
 
 # Change to [0.5, 0.75, 1.0, 1.25, 1.5, 1.75] for multi-scale test.
-flags.DEFINE_multi_float('eval_scales', [0.75, 1.125, 1.5, 1.875, 2.25, 2.625],
+#flags.DEFINE_multi_float('eval_scales', [0.75, 1.0, 1.25, 1.5, 1.75],
+#                         'The scales to resize images for evaluation.')
+flags.DEFINE_multi_float('eval_scales', [0.75, 1.0, 1.25, 1.5, 1.75],
                          'The scales to resize images for evaluation.')
 
 # Change to True for adding flipped images during test.

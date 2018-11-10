@@ -134,6 +134,8 @@ def predict_labels_multi_scale(images,
           align_corners=True)
       outputs_to_predictions[output].append(
           tf.expand_dims(tf.nn.softmax(logits), 4))
+      #outputs_to_predictions[output].append(
+      #    tf.argmax(tf.nn.softmax(logits), 3))
 
       if add_flipped_images:
         scales_to_logits_reversed = (
@@ -144,12 +146,15 @@ def predict_labels_multi_scale(images,
             align_corners=True)
         outputs_to_predictions[output].append(
             tf.expand_dims(tf.nn.softmax(logits_reversed), 4))
-
+        #outputs_to_predictions[output].append(
+        #    tf.argmax(tf.nn.softmax(logits_reversed), 3))
   for output in sorted(outputs_to_predictions):
     predictions = outputs_to_predictions[output]
     # Compute average prediction across different scales and flipped images.
     predictions = tf.reduce_mean(tf.concat(predictions, 4), axis=4)
     outputs_to_predictions[output] = tf.argmax(predictions, 3)
+    #predictions = tf.add_n(predictions)
+    #outputs_to_predictions[output] = tf.where(predictions>=1, tf.ones_like(predictions), predictions)
 
   return outputs_to_predictions
 

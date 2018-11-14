@@ -63,7 +63,7 @@ flags.DEFINE_integer('output_stride', 16,
 # Change to [0.5, 0.75, 1.0, 1.25, 1.5, 1.75] for multi-scale test.
 #flags.DEFINE_multi_float('eval_scales', [0.75, 1.0, 1.25, 1.5, 1.75],
 #                         'The scales to resize images for evaluation.')
-flags.DEFINE_multi_float('eval_scales', [0.75, 1.0, 1.25, 1.5, 1.75],
+flags.DEFINE_multi_float('eval_scales', [0.75, 1.25, 1.75],
                          'The scales to resize images for evaluation.')
 
 # Change to True for adding flipped images during test.

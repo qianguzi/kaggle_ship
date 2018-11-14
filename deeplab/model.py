@@ -126,6 +126,14 @@ def predict_labels_multi_scale(images,
             is_training=False,
             fine_tune_batch_norm=False)
 
+      with tf.variable_scope(tf.get_variable_scope(), reuse=True):
+        outputs_to_scales_to_logits_fliped = multi_scale_logits(
+            tf.image.flip_up_down(images),
+            model_options=model_options,
+            image_pyramid=[image_scale],
+            is_training=False,
+            fine_tune_batch_norm=False)
+
     for output in sorted(outputs_to_scales_to_logits):
       scales_to_logits = outputs_to_scales_to_logits[output]
       logits = tf.image.resize_bilinear(
@@ -146,6 +154,16 @@ def predict_labels_multi_scale(images,
             align_corners=True)
         outputs_to_predictions[output].append(
             tf.expand_dims(tf.nn.softmax(logits_reversed), 4))
+
+        scales_to_logits_fliped = (
+            outputs_to_scales_to_logits_fliped[output])
+        logits_fliped = tf.image.resize_bilinear(
+            tf.image.flip_up_down(scales_to_logits_fliped[MERGED_LOGITS_SCOPE]),
+            tf.shape(images)[1:3],
+            align_corners=True)
+        outputs_to_predictions[output].append(
+            tf.expand_dims(tf.nn.softmax(logits_fliped), 4))
+
         #outputs_to_predictions[output].append(
         #    tf.argmax(tf.nn.softmax(logits_reversed), 3))
   for output in sorted(outputs_to_predictions):

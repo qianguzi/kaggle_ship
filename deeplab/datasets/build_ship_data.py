@@ -27,15 +27,16 @@ from sklearn.model_selection import train_test_split
 FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('dataset_folder',
-                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship',
+                           '/media/jun/data/ship',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string('train_folder',
-                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/train_v2',
+                           #'/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/train_v2',
+                           '/media/jun/data/ship/train_v2',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string('seg_folder',
-                           '/media/deeplearning/f3cff4c9-1ab9-47f0-8b82-231dedcbd61b/ship/seg_v2',
+                           '/media/jun/data/ship/seg_v2',
                            'Folder containing images.')
 
 tf.app.flags.DEFINE_string(
@@ -256,7 +257,12 @@ def main(unused_argv):
   #val_lotship_list, val_fewship_list = split_term(val)
   convert_dataset('val', val_isship_list, val_nanship_list, train_df)
 
-  train_lotship_list, train_fewship_list = split_term(train)
+  train_lotship_list = train['ImageId'][train['class']>2].tolist()
+  train_fewship_list = train['ImageId'][train['class']==1].tolist()
+  train_anyship_list = train['ImageId'][train['class']==2].tolist()
+  train_fewship_list = random.sample(train_fewship_list+train_anyship_list, len(train_lotship_list))
+  
+  #train_lotship_list, train_fewship_list = split_term(train)
   convert_dataset('train', train_lotship_list, train_fewship_list, train_df)
 
 
